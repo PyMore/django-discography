@@ -23,11 +23,15 @@ class AlbumListView(APIView):
         else: 
             filter = {}
 
-            if request.GET.has_key('id'):
-                filter['pk'] = album
-            
+            if request.GET.get('name'):
+                filter['id'] = request.GET.get('name')
+            if request.GET.get('songs'):
+                filter['songs'] = request.GET.get('songs')
+            if request.GET.get('artist'):
+                filter['artist__id'] = request.GET.get('artist')
+                            
             print(filter)
-            album = Album.object.filter(**filter)
+            album = Album.objects.filter(**filter)
 
         serializer = AlbumSerializer(album,
             context={'request':request}, many=True)
@@ -61,7 +65,7 @@ class ArtistView(APIView):
         artists = ArtistGroup.objects.get(pk=id)
 
         if not artists:
-            return Response (data={'ArtistGroup': [_('ArtistGroup does not exist')]},
+            return Response (data={'ArtistGroup': 'ArtistGroup does not exist'},
                 status=status.HTTP_400_BAD_REQUEST)
 
         serializer = ArtistGroupSerializer(artists,
@@ -72,7 +76,7 @@ class ArtistView(APIView):
     def put(self,request,id):
         artists = get_object_or_none(ArtistGroup, pk=id)
         if not artists:
-            return Response (data={'ArtistGroup': [_('ArtistGroup does not exist')]},
+            return Response (data={'ArtistGroup': 'ArtistGroup does not exist'},
                 status=status.HTTP_400_BAD_REQUEST)
         serializer = ArtistGroupSerializer(artists, data=request.data)
         if not serializer.is_valid():
@@ -106,3 +110,8 @@ class TimeLineView(APIView):
     def get(self, request):
         data =requestJson('https://gturnquist-quoters.cfapps.io/api/random')        
         return Response(data=json.loads(data), status=status.HTTP_200_OK)
+
+
+"""
+    xml 
+"""

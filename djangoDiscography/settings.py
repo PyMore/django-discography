@@ -31,7 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 LOCAL_APPS = [
-    'apps.api'
+    'apps.api',
+    'apps.common',
 ]
 
 INSTALLED_APPS = [

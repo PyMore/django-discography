@@ -13,6 +13,58 @@ from .serializers import (
 )
 import json
 
+
+class AlbumDetailView(APIView):
+    """ Album List View """
+
+    def get(self, request,id):
+        album = get_object_or_none(Album,pk=id)
+
+        if not album:
+            return Response (data={'Album': 'Album does not exist'},
+                status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = AlbumSerializer(album,
+            context={'request':request}, many=False)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    def get(self, request,id):
+        album = get_object_or_none(Album,pk=id)
+
+        if not album:
+            return Response (data={'Album': 'Album does not exist'},
+                status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = AlbumSerializer(album,
+            context={'request':request}, many=False)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+    def patch(self, request, id):
+        album = get_object_or_none(Album,pk=id)
+
+        if not album:
+            return Response (data={'Album': 'Album does not exist'},
+                status=status.HTTP_400_BAD_REQUEST)
+
+
+        serializer = AlbumSerializer(
+            album,
+            data=request.data,
+            partial=True)
+
+        if not serializer.is_valid():
+            return Response(data=serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+
+        serializer = AlbumSerializer(album,
+            context={'request':request}, many=False)
+            
+        return Response(data={}, status=status.HTTP_200_OK)
+
+
+
 class AlbumListView(APIView):
     """ Album List View """
 
@@ -86,7 +138,6 @@ class ArtistView(APIView):
         serializer.save()
         return Response(data='update', status=status.HTTP_200_OK)
         
-
 
 
 

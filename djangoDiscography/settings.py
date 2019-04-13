@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 LOCAL_APPS = [
     'apps.api',
+    'apps.api_v2',
     'apps.common',
 ]
 

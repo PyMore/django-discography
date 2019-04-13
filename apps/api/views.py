@@ -1,10 +1,14 @@
-
 from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response as RfResponse
 from rest_framework.views import APIView
 from apps.common.response import Response
-from apps.common.utils import requestJson,get_object_or_none
+from apps.common.utils import (
+    requestJson,
+    get_object_or_none,
+    serializer_data,
+    serializer_data_create
+)
 from .models import Album, ArtistGroup
 from .serializers import (
     AlbumSerializer, 
@@ -17,51 +21,23 @@ import json
 class AlbumDetailView(APIView):
     """ Album List View """
 
-    def get(self, request,id):
-        album = get_object_or_none(Album,pk=id)
-
-        if not album:
-            return Response (data={'Album': 'Album does not exist'},
-                status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = AlbumSerializer(album,
-            context={'request':request}, many=False)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def get(self, request,id):
-        album = get_object_or_none(Album,pk=id)
-
-        if not album:
-            return Response (data={'Album': 'Album does not exist'},
-                status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = AlbumSerializer(album,
-            context={'request':request}, many=False)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        """ Get Album by id """
+        return serializer_data(Album,id,AlbumSerializer,request,{
+            'Album': 'Album does not exist'
+            }
+        )
 
 
     def patch(self, request, id):
-        album = get_object_or_none(Album,pk=id)
-
-        if not album:
-            return Response (data={'Album': 'Album does not exist'},
-                status=status.HTTP_400_BAD_REQUEST)
-
-
-        serializer = AlbumSerializer(
-            album,
-            data=request.data,
-            partial=True)
-
-        if not serializer.is_valid():
-            return Response(data=serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
-        serializer.save()
-
-        serializer = AlbumSerializer(album,
-            context={'request':request}, many=False)
-            
-        return Response(data={}, status=status.HTTP_200_OK)
+        """ Update Album """
+        return serializer_data_create(Album,id,
+            AlbumSerializer,True,request,
+            {
+                'Album': 'Album does not exist'
+            }
+        )
 
 
 
@@ -114,41 +90,34 @@ class ArtistView(APIView):
     "Artis View"
 
     def get(self, request,id):
-        artists = ArtistGroup.objects.get(pk=id)
-
-        if not artists:
-            return Response (data={'ArtistGroup': 'ArtistGroup does not exist'},
-                status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = ArtistGroupSerializer(artists,
-            context={'request':request}, many=False)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-
-    def put(self,request,id):
-        artists = get_object_or_none(ArtistGroup, pk=id)
-        if not artists:
-            return Response (data={'ArtistGroup': 'ArtistGroup does not exist'},
-                status=status.HTTP_400_BAD_REQUEST)
-        serializer = ArtistGroupSerializer(artists, data=request.data)
-        if not serializer.is_valid():
-            return Response(data=serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
-
-        serializer.save()
-        return Response(data='update', status=status.HTTP_200_OK)
+        return serializer_data(ArtistGroup,id,
+            ArtistGroupSerializer,
+            request,{
+            'Album': 'Album does not exist'
+            }
+        )
         
 
+    def put(self,request,id):
+        return serializer_data_create(ArtistGroup,id,
+            ArtistGroupSerializer,False,request,
+            {
+                'ArtistGroup': 'ArtistGroup does not exist'
+            }
+        )
+                
 
 
 class ArtistAlbumView(APIView):
     "Artisr List Album View"
 
     def get(self, request,id):
-        artists = ArtistGroup.objects.get(pk=id)
-        serializer = ArtisAlbumSerializer(artists,
-            context={'request':request}, many=False)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return serializer_data(ArtistGroup,id,
+            ArtistGroupSerializer,
+            request,{
+            'Artis': 'Album does not exist'
+            }
+        )
 
 
 

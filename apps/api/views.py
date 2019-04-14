@@ -58,7 +58,6 @@ class AlbumListView(APIView):
             if request.GET.get('artist'):
                 filter['artist__id'] = request.GET.get('artist')
                             
-            print(filter)
             album = Album.objects.filter(**filter)
 
         serializer = AlbumSerializer(album,
@@ -76,7 +75,6 @@ class ArtistGroupListVIew(APIView):
 
 
     def post(self, request):
-        print(request.data)
         serializer = ArtistGroupSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(data={"filtered_error": 'fail'},
@@ -93,7 +91,7 @@ class ArtistView(APIView):
         return serializer_data(ArtistGroup,id,
             ArtistGroupSerializer,
             request,{
-            'Album': 'Album does not exist'
+                'Album': 'Album does not exist'
             }
         )
         
@@ -113,7 +111,7 @@ class ArtistAlbumView(APIView):
 
     def get(self, request,id):
         return serializer_data(ArtistGroup,id,
-            ArtistGroupSerializer,
+            ArtisAlbumSerializer,
             request,{
             'Artis': 'Album does not exist'
             }

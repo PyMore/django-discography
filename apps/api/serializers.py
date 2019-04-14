@@ -26,17 +26,18 @@ class AlbumNotAritisSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Album
-        fields ='__all__'
+        exclude = ('artist',)
+
 
 class ArtisAlbumSerializer(serializers.ModelSerializer):
 
-    is_favorite = serializers.SerializerMethodField()
+    albums = serializers.SerializerMethodField()
 
-    def get_is_favorite(self, obj):
-        albums= Album.objects.filter(artist__id=obj.id)
-        print(albums)
-        print(self.context['request'])
-        return AlbumNotAritisSerializer(albums,self.context['request'],many=True).is_valid()
+    def get_albums(self, obj):
+        album = Album.objects.filter(artist__id=obj.id)
+        serializer = AlbumNotAritisSerializer(album,
+            context=self.context['request'], many=True)
+        return serializer.data    
 
     class Meta:
         model = ArtistGroup

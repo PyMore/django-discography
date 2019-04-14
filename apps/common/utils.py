@@ -1,10 +1,15 @@
 import requests
-from .response import Response
 from rest_framework import generics, status
+
+#from apps.common.api_version.version import FactoryVersion
+
+from .api_version.api_name import SerializersListApv1
+from .log import log
+from .response import Response
+
 
 def requestJson(url):
     data = requests.get(url)
-    print(data)
     if data.status_code == requests.codes.ok:
         return data._content
     else:
@@ -27,9 +32,19 @@ def api_version(vesion,serializer,serializerDefautl):
         pass
 
 
-
+@log
 def serializer_data(model,id,serializer,request,message):
     data = get_object_or_none(model,pk=id)
+
+    """
+    Here api version logical 
+    version = FactoryVersion(request.version,'').is_valid()
+    if verion.is_valid():
+        pass
+    else:
+        pass
+    """
+
     if not data:
         return Response (data=message,
             status=status.HTTP_400_BAD_REQUEST)
@@ -44,6 +59,17 @@ def serializer_data_create(model,id,serializer,isPartial,request,message):
     """ Serializer Data Create """
 
     data = get_object_or_none(model, pk=id)
+
+
+    """
+    Here api version logical 
+    version = FactoryVersion(request.version,'').is_valid()
+    if verion.is_valid():
+        pass
+    else:
+        pass
+    """
+
     
     if not data:
         return Response (data=message,

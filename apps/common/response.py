@@ -1,6 +1,6 @@
 from rest_framework.response import Response as DRFResponse
 from rest_framework.status import is_client_error
-from rest_framework import status
+from rest_framework import  status as statusCode
 
 class Response(DRFResponse):
     """Response"""
@@ -22,12 +22,13 @@ class Response(DRFResponse):
         
         else:
             items = kwargs.get('data', {}).items()
+            print(statusCode)
             for k, v in items:
                 kwargs['data'] = {
                     'code': int(v[1]) if len(v) == 2
-                        else status.HTTP_400_BAD_REQUEST,
-                    'msj': "",    
-                    'extra': v[0], 'field': k
+                        else statusCode.HTTP_400_BAD_REQUEST,
+                    'msj': "Error",    
+                    'extra': k, 
                 }
         
         

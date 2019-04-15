@@ -142,3 +142,4 @@ tags
 # Persistent undo
 [._]*.un~
 
+*.sqlite3

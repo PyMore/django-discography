@@ -1,8 +1,6 @@
-from builtins import object
-from fnmatch import filter
 from rest_framework import serializers
 from .models import Album, ArtistGroup
-
+from apps.common.serializer import ApiVersionSerializer
 
 class ArtistGroupSerializer(serializers.ModelSerializer):
     """  Serializer """

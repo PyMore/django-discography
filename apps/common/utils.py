@@ -1,7 +1,9 @@
 import requests
+from django.core.serializers import serialize
 from rest_framework import generics, status
 
-#from apps.common.api_version.version import FactoryVersion
+from apps.common.api_version.api_name import SerializersListApv1
+from apps.common.api_version.version import FactoryVersion
 
 from .api_version.api_name import SerializersListApv1
 from .log import log
@@ -27,9 +29,14 @@ def get_object_or_none(model, *args, **kwargs):
     return obj
 
 
-def api_version(vesion,serializer,serializerDefautl):
-    if self.request.version == 'v1':
-        pass
+def api_version(request,serializer):
+    version = request.version or 'v1' 
+    version = FactoryVersion(version,serializer.__name__)    
+
+    if version.is_valid(): # succes
+         return version.data
+    else: 
+        return None
 
 
 @log
@@ -37,20 +44,20 @@ def serializer_data(model,id,serializer,request,message):
     data = get_object_or_none(model,pk=id)
 
     """
-    Here api version logical 
-    version = FactoryVersion(request.version,'').is_valid()
-    if verion.is_valid():
-        pass
-    else:
-        pass
+        Here api version logical 
     """
-
-    if not data:
+    
+    serializer_version_api = api_version(request,serializer)
+    
+    if not data or not serializer_version_api :
         return Response (data=message,
             status=status.HTTP_400_BAD_REQUEST)
 
-    serializer = serializer(data,
-        context={'request':request}, many=False)
+    serializer = serializer_version_api(
+        data,
+        context={'request':request},
+        many=False
+    )
     return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
@@ -62,14 +69,10 @@ def serializer_data_create(model,id,serializer,isPartial,request,message):
 
 
     """
-    Here api version logical 
-    version = FactoryVersion(request.version,'').is_valid()
-    if verion.is_valid():
-        pass
-    else:
-        pass
+        Here api version logical 
     """
-
+    
+    serializer_version_api = api_version(request,serializer)
     
     if not data:
         return Response (data=message,

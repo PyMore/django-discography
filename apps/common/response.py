@@ -22,7 +22,6 @@ class Response(DRFResponse):
         
         else:
             items = kwargs.get('data', {}).items()
-            print(statusCode)
             for k, v in items:
                 kwargs['data'] = {
                     'code': int(v[1]) if len(v) == 2

@@ -4,7 +4,7 @@ from rest_framework import generics, status
 
 from apps.common.api_version.api_name import SerializersListApv1
 from apps.common.api_version.version import FactoryVersion
-
+from apps.common.models import RamdomNumber
 from .api_version.api_name import SerializersListApv1
 from .log import log
 from .response import Response
@@ -38,7 +38,6 @@ def api_version(request,serializer):
     else: 
         return None
 
-
 @log
 def serializer_data(model,id,serializer,request,message):
     data = get_object_or_none(model,pk=id)
@@ -71,7 +70,7 @@ def serializer_data_create(model,id,serializer,isPartial,request,message):
     """
         Here api version logical 
     """
-    
+
     serializer_version_api = api_version(request,serializer)
     
     if not data:
@@ -89,3 +88,16 @@ def serializer_data_create(model,id,serializer,isPartial,request,message):
 
     serializer.save()
     return Response(data='update', status=status.HTTP_200_OK)    
+
+
+def save_number(value,description):
+    """ Save value """
+
+    obj = get_object_or_none(RamdomNumber,number=value)
+
+    if not obj:
+        RamdomNumber(
+            number=value,
+            description = description
+        ).save()
+

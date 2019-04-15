@@ -7,7 +7,8 @@ from apps.common.utils import (
     requestJson,
     get_object_or_none,
     serializer_data,
-    serializer_data_create
+    serializer_data_create,
+    save_number
 )
 from .models import Album, ArtistGroup
 from .serializers import (
@@ -20,7 +21,6 @@ import json
 
 class AlbumDetailView(APIView):
     """ Album List View """
-
 
     def get(self, request,id):
         """ Get Album by id """
@@ -47,7 +47,7 @@ class AlbumListView(APIView):
     def get(self, request):
 
         if not request.GET:
-            album = Album.objects.all()
+            album = Album.objects.filter(enable=True)
         else: 
             filter = {}
 
@@ -57,7 +57,9 @@ class AlbumListView(APIView):
                 filter['songs'] = request.GET.get('songs')
             if request.GET.get('artist'):
                 filter['artist__id'] = request.GET.get('artist')
-                            
+
+            filter['enable'] = True
+
             album = Album.objects.filter(**filter)
 
         serializer = AlbumSerializer(album,
@@ -66,9 +68,10 @@ class AlbumListView(APIView):
 
 
 class ArtistGroupListVIew(APIView):
+    """ Artist Group List View """
 
     def get(self, request):
-        artists = ArtistGroup.objects.all()
+        artists = ArtistGroup.objects.filter(enable=True)
         serializer = ArtistGroupSerializer(artists,
             context={'request':request}, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -125,8 +128,16 @@ class ArtistAlbumView(APIView):
 
 
 class TimeLineView(APIView):
+    """ Time Line View """
     def get(self, request):
         data =requestJson('https://gturnquist-quoters.cfapps.io/api/random')        
+        dic = json.loads(data)
+        if dic.get('value'):
+            save_number(
+                dic.get('value')['id'],
+                dic.get('value')['quote']
+            )
+        
         return Response(data=json.loads(data), status=status.HTTP_200_OK)
 
 

@@ -15,3 +15,14 @@ class Log(models.Model):
     def __str__(self):
         return self.path
 
+
+class RamdomNumber(models.Model):
+    """ Save Ramdom Numbers """
+
+    number = models.IntegerField(null=False)
+    description = models.CharField(max_length=200,null=False)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.number} - {self.description}'

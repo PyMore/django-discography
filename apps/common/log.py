@@ -16,6 +16,6 @@ def generateFile(request):
         path=request.path,
         headers=request.headers,
         data=request.data,
-        body=request.body,
+        body= {},
         method=request.method)
     f.save()

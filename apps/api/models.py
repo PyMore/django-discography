@@ -22,6 +22,7 @@ class Album(models.Model):
         on_delete=models.CASCADE, null=False,
         blank=False, db_column='artist')
     songs = models.IntegerField(null=False, blank=False,default=0)
+    year = models.DateTimeField(auto_now_add=True)
     enable = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

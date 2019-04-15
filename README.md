@@ -36,12 +36,6 @@ Say what the step will be
 (venv)$ python manage.py migrate
 ```
 
-### Loading initial database data
-
-```bash
-(venv)$ python manage.py loaddata fixtures/initial.json
-```
-
 ### Running django development server
 
 ```bash
